@@ -11,10 +11,10 @@ export class TaskManager extends EventEmitter {
 
   // ? CREATE
   add(taskTitle) {
-    const newTask = new TaskManager(taskTitle);
+    const newTask = new Task(taskTitle);
     this.#tasks.push(newTask);
     this.emit("task:added", { task: newTask });
-    this.emit("tasks:changed", { task: [] });
+    this.emit("tasks:changed", { tasks: this.getAllToJSON() });
 
     return newTask;
   }
