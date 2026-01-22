@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <link rel="stylesheet" href="src/style.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>JS08 - Projet fil rouge - Todo List MVC Client</title>
+  </head>
+  <body>
+    <div class="app-container">
+      <header>
+        <h1>Todo List MVC Client</h1>
+      </header>
+
+      <main>
+        <section class="task-form-section">
+          <form id="task-form">
+            <input
+              type="text"
+              id="task-input"
+              placeholder="Nouvelle tâche..."
+              required
+            />
+            <button type="submit">Ajouter</button>
+          </form>
+        </section>
+
+        <section class="stats-section">
+          <div id="task-stats"></div>
+        </section>
+
+        <section class="task-list-section">
+          <ul id="task-list"></ul>
+        </section>
+      </main>
+    </div>
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
