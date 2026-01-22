@@ -20,6 +20,7 @@ export class TaskController {
   #init() {
     this.#manager.on("task:added", (data) => {
       console.log(`Tâche ajoutée : ${data.task.title}`);
+      this.#saveToStorage();
     });
 
     // ? Dès que la colleciton stockée dans le manager des taches
@@ -31,6 +32,8 @@ export class TaskController {
     });
 
     this.#views.form.onSubmit((title) => this.#handleAddTask(title));
+
+    this.#loadFromStorage();
 
     this.#updateAllViews();
   }
@@ -45,5 +48,27 @@ export class TaskController {
 
   #updateAllViews(tasks = this.#manager.getAllToJSON()) {
     this.#views.list.render(tasks);
+  }
+
+  #saveToStorage() {
+    try {
+      const json = JSON.stringify(this.#manager.getAllToJSON());
+      localStorage.setItem("tasks", json);
+    } catch (error) {
+      console.error("Erreur de sauvegarde", error);
+    }
+  }
+
+  #loadFromStorage() {
+    const json = localStorage.getItem("tasks");
+
+    if (json) {
+      const data = JSON.parse(json);
+      this.#manager.loadFromJSON(data);
+    }
+    try {
+    } catch (error) {
+      console.error(error);
+    }
   }
 }
