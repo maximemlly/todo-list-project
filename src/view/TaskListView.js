@@ -8,7 +8,7 @@ export class TaskListView {
     this.#containerElement = document.querySelector(containerSelector);
 
     if (!this.#containerElement) {
-      throw new Error("Élement de contenueur non trouvé");
+      throw new Error("Élément de conteneur non trouvé");
     }
   }
 
@@ -32,22 +32,42 @@ export class TaskListView {
       return;
     }
 
-    tasks.map((task) => {
-      const taskItem = this.#createEmptyElement(task);
-      return taskItem;
+    // ? Méthode 1 (moins efficace)
+    // tasks.forEach((task) => {
+    //   const taskItem = this.#createTaskElement(task);
+    //   this.#containerElement.appendChild(taskItem);
+    // });
+
+    // ? Méthode 2 (plus optimisée)
+    const elements = tasks.map((task) => {
+      return this.#createTaskElement(task);
     });
     this.#containerElement.append(...elements);
   }
 
-  #renderEmptyState() {}
+  #renderEmptyState() {
+    const emptyStateElement = document.createElement("li");
+    emptyStateElement.classList.add("empty-state");
 
-  #createEmptyElement(task) {
+    const emptyStateTitle = document.createElement("p");
+    emptyStateTitle.textContent = "Aucune tâche pour le moment.";
+
+    const emptyStateDescription = document.createElement("p");
+    emptyStateDescription.textContent = "Ajoutez une tâche pour commencer.";
+    emptyStateDescription.classList.add("hint");
+
+    emptyStateElement.append(emptyStateTitle, emptyStateDescription);
+    this.#containerElement.appendChild(emptyStateElement);
+  }
+
+  #createTaskElement(task) {
     const taskElement = document.createElement("li");
     taskElement.classList.add("task");
 
-    // ? Création de l'élément toggle
-    const taskToggleElement = DocumentFragment.createElement("input");
+    // ? Création de l'élément de toggle (checkbox)
+    const taskToggleElement = document.createElement("input");
     taskToggleElement.setAttribute("type", "checkbox");
+    // * OU taskToggleElement.type = "checkbox"
     taskToggleElement.classList.add("task-toggle");
     taskToggleElement.addEventListener("change", () => {
       if (typeof this.#toggleCallback === "function") {
@@ -57,39 +77,43 @@ export class TaskListView {
 
     // ? Création de l'élément de titre
     const taskTitleElement = document.createElement("p");
-    taskTitleElement.classList.add("add-title");
+    taskTitleElement.classList.add("task-title");
     taskTitleElement.textContent = task.title;
     taskTitleElement.dataset.taskId = task.id;
 
-    const taskActionsElement = docimenet.createElement("div");
+    // ? Groupement des boutons (UI)
+    const taskActionsElement = document.createElement("div");
     taskActionsElement.classList.add("task-actions");
 
-    // ? Bouton "Éditer"
+    // ? Bouton éditer
     const taskEditElement = document.createElement("button");
     taskEditElement.textContent = "Éditer";
     taskEditElement.classList.add("button", "button--primary");
     taskEditElement.setAttribute("type", "button");
     taskEditElement.addEventListener("click", () => {
       if (typeof this.#editCallback === "function") {
-        this.#editCallback(task.id);
+        this.#editCallback(task.id, task.title);
       }
     });
 
-    // ? Boutton "Supprimer"
+    // ? Bouton supprimer
     const taskDeleteElement = document.createElement("button");
     taskDeleteElement.textContent = "Supprimer";
     taskDeleteElement.classList.add("button", "button--danger");
     taskDeleteElement.setAttribute("type", "button");
     taskDeleteElement.addEventListener("click", () => {
-      if (typeof this.#editCallback === "function") {
-        this.#editCallback(task.id, task.title);
+      if (typeof this.#deleteCallback === "function") {
+        this.#deleteCallback(task.id, task.title);
       }
     });
 
+    // ? Insertion des boutons dans le groupement de boutons
     taskActionsElement.append(taskEditElement, taskDeleteElement);
 
-    taskElement.append(taskTitleElement, taskToggleElement);
+    // ? Insertion des éléments de la tâche dans le conteneur li de la tâche
+    taskElement.append(taskTitleElement, taskToggleElement, taskActionsElement);
 
+    // ? On retourne l'élément HTML tout juste préparé
     return taskElement;
   }
 }

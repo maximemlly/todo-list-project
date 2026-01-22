@@ -1,3 +1,9 @@
-import { Task } from "./models/Task";
+import "./style.css";
 
-window.taskManager = new TaskManager();
+import { TaskController } from "./controllers/TaskController";
+
+document.addEventListener("DOMContentLoaded", () => {
+  const app = new TaskController();
+
+  console.log("Application initialisée");
+});
